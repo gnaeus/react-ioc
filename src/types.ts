@@ -24,3 +24,10 @@ export function isToken(arg): arg is Token {
 export function isReactComponent(prototype) {
   return isObject(prototype) && isObject(prototype.isReactComponent);
 }
+
+export function isValidMetadata(arg): arg is Function {
+  return (
+    isFunction(arg) &&
+    [Object, Function, Number, String, Boolean].indexOf(arg) === -1
+  );
+}

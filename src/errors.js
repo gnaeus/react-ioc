@@ -55,3 +55,16 @@ export function logNotFoundProvider(target) {
     );
   }
 }
+
+export function logInvalidMetadata(target, token) {
+  const tokenName = getDebugName(token);
+  const targetName = getDebugName(target);
+  logError(
+    `${tokenName} is not a valid dependency.
+Please specify ES6 class as property type e.g.
+class MyService {}
+class ${targetName} {
+  @inject myService: MyService;
+}`
+  );
+}

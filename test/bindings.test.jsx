@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { provider, inject, toClass, InjectorContext } from "../src";
+import { provider, inject, toClass } from "../src";
 
 function sharedTests() {
   it("should accept bindings in short form", () => {
@@ -10,10 +10,9 @@ function sharedTests() {
 
     @provider(FooService, [BarService], [BazService, BazService])
     class App extends Component {
-      static contextType = InjectorContext;
-      fooService = inject(this, FooService);
-      barService = inject(this, BarService);
-      bazService = inject(this, BazService);
+      @inject(FooService) fooService;
+      @inject(BarService) barService;
+      @inject(BazService) bazService;
 
       render() {
         app = this;
@@ -44,10 +43,9 @@ function sharedTests() {
       [bazToken, BazService]
     )
     class App extends Component {
-      static contextType = InjectorContext;
-      fooService = inject(this, "fooToken");
-      barService = inject(this, barToken);
-      bazService = inject(this, bazToken);
+      @inject("fooToken") fooService;
+      @inject(barToken) barService;
+      @inject(bazToken) bazService;
 
       render() {
         app = this;
@@ -75,8 +73,7 @@ function sharedTests() {
       [BarService, toClass(BarService)]
     )
     class App extends Component {
-      static contextType = InjectorContext;
-      barService = inject(this, BarService);
+      @inject(BarService) barService;
 
       render() {
         app = this;
@@ -125,8 +122,7 @@ describe("binding functions", () => {
     // @ts-ignore
     @provider([AppService, toClass("not a class")])
     class App extends Component {
-      static contextType = InjectorContext;
-      appService = inject(this, AppService);
+      @inject(AppService) appService;
     }
 
     App;

@@ -22,6 +22,20 @@ export declare function provider(
 ): <T extends Function>(target: T) => ProviderMixin<T>;
 
 /**
+ * Property decorator that resolves a class instance
+ * which registered by some Provider in hierarchy.
+ * Instance is cached in Provider that registers it's class.
+ * @param token Dependency injection token
+ * @returns Property decorator
+ */
+export declare function inject(token?: Token): PropertyDecorator;
+/**
+ * Property decorator that resolves a class instance
+ * which registered by some Provider in hierarchy.
+ * Instance is cached in Provider that registers it's class.
+ */
+export declare function inject(target: Object, key: string | symbol): void;
+/**
  * Create a class instance that registered by some Provider in hierarchy.
  * Instance is cached in Provider that registers it's class.
  * @param target The object in which we inject class instance
