@@ -78,6 +78,13 @@ declare export function inject<T>(
 declare export function toClass(cosntructor: Class<any>): Function;
 
 /**
+ * Bind dependency to specified value.
+ * @param value Any value
+ * @returns Dependency resolver
+ */
+declare export function toValue(value: any): Function;
+
+/**
  * Bind dependency to specified factory funciton.
  * @param factory Factory
  * @returns Dependency resolver

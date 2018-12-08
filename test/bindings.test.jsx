@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { provider, inject, toClass, toFactory } from "../src";
+import { provider, inject, toClass, toFactory, toValue } from "../src";
 
 function sharedTests() {
   it("should accept bindings in short form", () => {
@@ -143,6 +143,27 @@ function sharedTests() {
     expect(app.appService.fooService).toBeInstanceOf(FooService);
     expect(app.appService.barService).toBeInstanceOf(BarService);
   });
+
+  it("should bind dependency to specified value", () => {
+    class AppService {}
+    const appService = new AppService();
+
+    @provider([AppService, toValue(appService)])
+    class App extends Component {
+      @inject(AppService) appService;
+
+      render() {
+        app = this;
+        return <div />;
+      }
+    }
+    /** @type {App} */
+    let app;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBe(appService);
+  });
 }
 
 describe("binding functions", () => {
@@ -203,6 +224,17 @@ describe("binding functions", () => {
     App;
 
     expect(console.error).toBeCalledTimes(4);
+  });
+
+  it("should validate specifed value", () => {
+    class AppService {}
+
+    @provider([AppService, toValue(undefined)])
+    class App extends Component {}
+
+    App;
+
+    expect(console.error).toBeCalledTimes(1);
   });
 });
 

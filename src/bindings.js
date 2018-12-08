@@ -53,6 +53,20 @@ export function toFactory(depsOrFactory, factory) {
   );
 }
 
+/**
+ * Bind type to specified value.
+ * @param {any} value
+ * @return {Function}
+ */
+export function toValue(value) {
+  if (__DEV__) {
+    if (value === undefined) {
+      logError(`Please specify some value`);
+    }
+  }
+  return asBinding(() => value);
+}
+
 /* istanbul ignore next */
 const IS_BINDING = typeof Symbol === "function" ? Symbol() : "__binding__";
 
