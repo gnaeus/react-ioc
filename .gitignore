@@ -1,0 +1,4 @@
+.vscode/
+.rpt2_cache/
+coverage/
+node_modules/
