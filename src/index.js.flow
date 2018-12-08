@@ -100,3 +100,10 @@ declare export function toFactory<T: any[]>(
   deps: $TupleMap<T, <V>(V) => Class<V> | Token>,
   factory: (...args: T) => any
 ): Function;
+
+/**
+ * Bind dependency to existing instance located by token.
+ * @param token Dependency injection token
+ * @returns Dependency resolver
+ */
+declare export function toExisting(token: Token): Function;

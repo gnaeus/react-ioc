@@ -101,3 +101,10 @@ export declare function toFactory<T extends [any, ...any[]]>(
   deps: { [K in keyof T]: Constructor<T[K]> | Token },
   factory: (...args: T) => any
 ): Function;
+
+/**
+ * Bind dependency to existing instance located by token.
+ * @param token Dependency injection token
+ * @returns Dependency resolver
+ */
+export declare function toExisting(token: Token): Function;

@@ -67,6 +67,22 @@ export function toValue(value) {
   return asBinding(() => value);
 }
 
+/**
+ * Bind type to existing instance located by token.
+ * @param {Token} token
+ * @return {Function}
+ */
+export function toExisting(token) {
+  if (__DEV__) {
+    if (!isFunction(token)) {
+      logError(
+        `Token ${getDebugName(token)} is not a valid dependency injection token`
+      );
+    }
+  }
+  return asBinding(injector => getInstance(injector, token));
+}
+
 /* istanbul ignore next */
 const IS_BINDING = typeof Symbol === "function" ? Symbol() : "__binding__";
 

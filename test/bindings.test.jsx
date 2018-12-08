@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { provider, inject, toClass, toFactory, toValue } from "../src";
+import {
+  provider,
+  inject,
+  toClass,
+  toFactory,
+  toValue,
+  toExisting
+} from "../src";
 
 function sharedTests() {
   it("should accept bindings in short form", () => {
@@ -164,6 +171,33 @@ function sharedTests() {
 
     expect(app.appService).toBe(appService);
   });
+
+  it("should bind dependency to already registered dependency", () => {
+    class FooService {}
+    class BarService {}
+
+    @provider(
+      [FooService, toClass(FooService)],
+      [BarService, toExisting(FooService)]
+    )
+    class App extends Component {
+      @inject(FooService) fooService;
+      @inject(BarService) barService;
+
+      render() {
+        app = this;
+        return <div />;
+      }
+    }
+    /** @type {App} */
+    let app;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.barService).toBeInstanceOf(FooService);
+    expect(app.fooService).toBeInstanceOf(FooService);
+    expect(app.barService).toBe(app.fooService);
+  });
 }
 
 describe("binding functions", () => {
@@ -230,6 +264,18 @@ describe("binding functions", () => {
     class AppService {}
 
     @provider([AppService, toValue(undefined)])
+    class App extends Component {}
+
+    App;
+
+    expect(console.error).toBeCalledTimes(1);
+  });
+
+  it("should validate specifed already registered dependency", () => {
+    class AppService {}
+
+    // @ts-ignore
+    @provider([AppService, toExisting(new AppService())])
     class App extends Component {}
 
     App;
