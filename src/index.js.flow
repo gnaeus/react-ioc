@@ -71,6 +71,24 @@ declare export function inject<T>(
 ): T;
 
 /**
+ * React hook for resolving a class instance that registered by some Provider in hierarchy.
+ * Instance is cached in Provider that registers it's class.
+ * @param token Dependency injection token
+ * @returns Resolved class instance
+ */
+declare export function useInstance<T>(token: Class<T> | Token): T;
+
+/**
+ * React hook for resolving a class instances that registered by some Provider in hierarchy.
+ * Instances are cached in Provider that registers it's classes.
+ * @param tokens Dependency injection tokens
+ * @returns Resolved class instances
+ */
+declare export function useInstances<T: any[]>(
+  ...tokens: $TupleMap<T, <V>(V) => Class<V> | Token>
+): T;
+
+/**
  * Bind dependency to specified class.
  * @param cosntructor Constructor
  * @returns Dependency resolver
