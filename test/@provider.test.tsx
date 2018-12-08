@@ -1,7 +1,60 @@
 import React, { Component } from "react";
-import { provider, InjectorContext } from "../src";
+import { render, unmountComponentAtNode } from "react-dom";
+import { provider, inject, InjectorContext } from "../src";
 
-function sharedTests() {}
+function sharedTests() {
+  it("should dispose created instances", () => {
+    class AppService {
+      dispose = jest.fn();
+    }
+
+    class PageService {
+      @inject appService: AppService;
+
+      dispose = jest.fn();
+    }
+
+    class AnotherService {
+      @inject appService: AppService;
+    }
+
+    @provider(AppService)
+    class App extends Component {
+      @inject appService: AppService;
+
+      render() {
+        app = this;
+        return <Page />;
+      }
+    }
+    let app: App;
+
+    @provider(PageService, AnotherService)
+    class Page extends Component {
+      @inject pageService: PageService;
+      @inject anotherService: AnotherService;
+
+      render() {
+        page = this;
+        return <div />;
+      }
+    }
+    let page: Page;
+
+    const container = document.createElement("div");
+
+    render(<App />, container);
+
+    expect(app.appService).toBeInstanceOf(AppService);
+    expect(page.pageService).toBeInstanceOf(PageService);
+    expect(page.anotherService).toBeInstanceOf(AnotherService);
+
+    unmountComponentAtNode(container);
+
+    expect(app.appService.dispose).toBeCalledTimes(1);
+    expect(page.pageService.dispose).toBeCalledTimes(1);
+  });
+}
 
 describe("@provider decorator", () => {
   const consoleError = console.error;
