@@ -10,8 +10,9 @@ __Hierarchical Dependency Injection for React__
  * Hierarchical Dependency Injection
  * Can inject dependencies using [React Hooks](https://reactjs.org/docs/hooks-overview.html)
  * Automatically calls `.dispose()` on created class instances when Recat unmouts `Provider` component
- * ES6, CommonJS and UMD bundles
  * Can work without decorators
+ * Supports lazy service registration with code splitting
+ * ES6, CommonJS and UMD bundles
  * Declarations for TypeScript and Flow
  * Type Safe even in JavaScript (with [TypeScript `--checkJs` mode](https://github.com/Microsoft/TypeScript/wiki/Type-Checking-JavaScript-Files))
  * Tiny: only 1.1 KB (min+gzip)
@@ -20,6 +21,10 @@ __Hierarchical Dependency Injection for React__
 
 ## Documentation
  * [@provider](#react-ioc-provider) class decorator or HOC
+   * [toClass](#react-ioc-provider) binding
+   * [toValue](#react-ioc-provider) binding
+   * [toFactory](#react-ioc-provider) binding
+   * [toExisting](#react-ioc-provider) binding
  * [@registerIn](#react-ioc-register-in) class decorator
  * [@inject](#react-ioc-inject-decorator) property decorator
  * [inject](#react-ioc-inject-function) utility function
@@ -118,10 +123,13 @@ Also `Provider` component has `static register()` function, for imperative depen
 
 ```js
 // App.jsx
-import { provider } from "react-ioc";
-class App extends React.Component {}
-export default provider()(App);
+import { provider, toClass } from "react-ioc";
 
+class App extends React.Component {}
+
+export default provider()(App);
+```
+```js
 // somewhere else
 import App from "./App";
 
