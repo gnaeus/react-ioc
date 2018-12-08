@@ -125,3 +125,5 @@ declare export function toFactory<T: any[]>(
  * @returns Dependency resolver
  */
 declare export function toExisting(token: Token): Function;
+
+export { inject as Inject, provider as Provider, registerIn as RegisterIn };

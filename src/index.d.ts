@@ -126,3 +126,5 @@ export declare function toFactory<T extends [any, ...any[]]>(
  * @returns Dependency resolver
  */
 export declare function toExisting(token: Token): Function;
+
+export { inject as Inject, provider as Provider, registerIn as RegisterIn };
