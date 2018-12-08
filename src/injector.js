@@ -53,6 +53,12 @@ export const INJECTOR =
  * @returns {Object} Resolved class instance
  */
 export function getInstance(injector, token) {
+  if (registrationQueue.length > 0) {
+    registrationQueue.forEach(registration => {
+      registration();
+    });
+    registrationQueue.length = 0;
+  }
   while (injector) {
     let instance = injector._instanceMap.get(token);
     if (instance !== undefined) {
@@ -77,3 +83,6 @@ export function getInstance(injector, token) {
   }
   return undefined;
 }
+
+/** @type {Function[]} */
+export const registrationQueue = [];

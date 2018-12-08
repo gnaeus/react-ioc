@@ -1,9 +1,9 @@
 import { createElement } from "react";
 import hoistNonReactStatics from "hoist-non-react-statics";
-import { Injector, InjectorContext } from "./injector";
+import { Injector, InjectorContext, registrationQueue } from "./injector";
 import { addBindings } from "./bindings";
 import { isObject, isFunction } from "./types";
-import { logError } from "./errors";
+import { logError, getDebugName } from "./errors";
 /** @typedef {import("./types").Definition} Definition */
 /** @typedef {import("./types").Token} Token */
 
@@ -70,4 +70,29 @@ export const provider = (...definitions) => Wrapped => {
 
   // static fields from component should be visible on the generated Consumer
   return hoistNonReactStatics(Provider, Wrapped);
+};
+
+/**
+ * Register class in specified provider.
+ * @typedef {{ register(constructor: Function): void }} Provider
+ * @param {() => Provider} getProvider Function that returns some provider
+ */
+export const registerIn = getProvider => constructor => {
+  registrationQueue.push(() => {
+    if (__DEV__) {
+      const provider = getProvider();
+      if (!isFunction(provider) || !(provider.prototype instanceof Injector)) {
+        logError(
+          `${getDebugName(provider)} is not a valid Provider. Please use:\n` +
+            `@registerIn(() => MyProvider)\n` +
+            `class ${getDebugName(constructor)} {}\n`
+        );
+      } else {
+        provider.register(constructor);
+      }
+    } else {
+      getProvider().register(constructor);
+    }
+  });
+  return constructor;
 };

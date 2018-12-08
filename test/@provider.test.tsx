@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import { provider, inject, InjectorContext } from "../src";
+import { provider, inject, registerIn, InjectorContext } from "../src";
 
 function sharedTests() {
   it("should dispose created instances", () => {
@@ -92,6 +92,43 @@ function sharedTests() {
     expect(app.appService).toBeInstanceOf(AppService);
     expect(page.pageService).toBeInstanceOf(PageService);
   });
+
+  it("should support lazy service registration", () => {
+    @registerIn(() => App)
+    class AppService {}
+
+    @registerIn(() => Page)
+    class PageService {
+      @inject appService: AppService;
+    }
+
+    @provider()
+    class App extends Component {
+      @inject appService: AppService;
+
+      render() {
+        app = this;
+        return <Page />;
+      }
+    }
+    let app: App;
+
+    @provider()
+    class Page extends Component {
+      @inject pageService: PageService;
+
+      render() {
+        page = this;
+        return <div />;
+      }
+    }
+    let page: Page;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppService);
+    expect(page.pageService).toBeInstanceOf(PageService);
+  });
 }
 
 describe("@provider decorator", () => {
@@ -115,6 +152,23 @@ describe("@provider decorator", () => {
 
     expect(console.error).toBeCalled();
     expect(App.contextType).toBe(InjectorContext);
+  });
+
+  it("should warn about invalid `getProvider` inside @registerIn", () => {
+    @registerIn(() => App)
+    class AppService {}
+
+    class App extends Component {
+      appService = inject(this, AppService);
+
+      render() {
+        return <div />;
+      }
+    }
+
+    render(<App />, document.createElement("div"));
+
+    expect(console.error).toBeCalled();
   });
 });
 

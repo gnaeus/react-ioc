@@ -1,4 +1,4 @@
 export { inject } from "./inject";
-export { provider } from "./provider";
+export { provider, registerIn } from "./provider";
 export { InjectorContext } from "./injector";
 export { toClass } from "./bindings";

@@ -37,6 +37,15 @@ export declare function provider(
 ): <T extends Function>(target: T) => ProviderMixin<T>;
 
 /**
+ * Decorator that lazily registers class in scope of specified Provider.
+ * @param getProvider Lambda function that returns Provider
+ * @returns Decorator
+ */
+export declare function registerIn(
+  getProvider: () => Provider
+): <T extends Function>(target: T) => T;
+
+/**
  * Property decorator that resolves a class instance
  * which registered by some Provider in hierarchy.
  * Instance is cached in Provider that registers it's class.
