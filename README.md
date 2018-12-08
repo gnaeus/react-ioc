@@ -2,7 +2,7 @@
 __Hierarchical Dependency Injection for React__
 
 [![Build Status](https://travis-ci.org/gnaeus/react-ioc.svg?branch=master)](https://travis-ci.org/gnaeus/react-ioc)
-[![Coverage Status](https://coveralls.io/repos/gnaeus/react-ioc/badge.svg?branch=master&service=github)](https://coveralls.io/github/gnaeus/react-ioc?branch=master)
+[![Coverage Status](https://coveralls.io/repos/gnaeus/react-ioc/badge.svg?branch=master)](https://coveralls.io/github/gnaeus/react-ioc?branch=master)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/gnaeus/react-ioc/master/LICENSE)
 [![npm version](https://img.shields.io/npm/v/react-ioc.svg?style=flat)](https://www.npmjs.com/package/react-ioc)
 
@@ -142,7 +142,7 @@ App.register(FooService, [BarService, toClass(BarService)]);
 Class decorator for lazy service registration in `Provider`. Accepts lambda that returns some `Proveider` component.
 
 ```jsx
-// ./services/LazyService
+// ./services/LazyService.js
 import { registerIn } from "react-ioc";
 import App from "../components/App";
 
