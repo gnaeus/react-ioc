@@ -9,11 +9,19 @@ type MethodDecorator = (
 ) => Object | void;
 type Token = Function | Object | string;
 type Definition = Function | [Function] | [Token, Function];
-
-type ProviderMixin<T> = T & {
-  contextType: typeof InjectorContext;
-  WrappedComponent: T;
+type Provider = {
+  /**
+   * Register dependency injection bindings in scope of decorated class
+   * @param definitions Dependency injection configuration
+   * @returns Decorated constructor
+   */
+  register(...definitions: Definition[]): void;
 };
+type ProviderMixin<T> = T &
+  Provider & {
+    contextType: typeof InjectorContext;
+    WrappedComponent: T;
+  };
 
 declare export var InjectorContext: any;
 

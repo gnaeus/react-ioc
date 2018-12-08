@@ -39,6 +39,14 @@ export const provider = (...definitions) => Wrapped => {
     }
 
     static WrappedComponent = Wrapped;
+
+    /**
+     * Register dependency injection bindings in scope of decorated class
+     * @param {...Definition} definitions Dependency injection configuration
+     */
+    static register(...definitions) {
+      addBindings(bindingMap, definitions);
+    }
   }
 
   if (__DEV__) {

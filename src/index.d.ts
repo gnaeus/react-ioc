@@ -4,10 +4,25 @@ type ClassDecorator = <T extends Function>(target: T) => T;
 type Constructor<T> = new (...args: any[]) => T;
 type Token = Function | Object | string | symbol;
 type Definition = Function | [Function] | [Token, Function];
-type ProviderMixin<T> = T & {
-  contextType: typeof InjectorContext;
-  WrappedComponent: T;
+type Provider = {
+  /**
+   * Register dependency injection bindings in scope of decorated class
+   * @param definitions Dependency injection configuration
+   * @returns Decorated constructor
+   */
+  register(...definitions: Definition[]): void;
 };
+type ProviderMixin<T> = T &
+  Provider & {
+    contextType: typeof InjectorContext;
+    WrappedComponent: T;
+  };
+
+declare module "react" {
+  namespace Component {
+    function register(...definitions: Definition[]): void;
+  }
+}
 
 export declare const InjectorContext: Context<Function>;
 

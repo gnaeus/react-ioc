@@ -54,6 +54,44 @@ function sharedTests() {
     expect(app.appService.dispose).toBeCalledTimes(1);
     expect(page.pageService.dispose).toBeCalledTimes(1);
   });
+
+  it("should accept declarations with .register() method", () => {
+    class AppService {}
+
+    class PageService {
+      @inject appService: AppService;
+    }
+
+    @provider()
+    class App extends Component {
+      @inject appService: AppService;
+
+      render() {
+        app = this;
+        return <Page />;
+      }
+    }
+    let app: App;
+
+    @provider()
+    class Page extends Component {
+      @inject pageService: PageService;
+
+      render() {
+        page = this;
+        return <div />;
+      }
+    }
+    let page: Page;
+
+    App.register(AppService);
+    Page.register(PageService);
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppService);
+    expect(page.pageService).toBeInstanceOf(PageService);
+  });
 }
 
 describe("@provider decorator", () => {
