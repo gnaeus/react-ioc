@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { provider, inject, InjectorContext } from "../src";
+import { provider, Provider, inject, Inject, InjectorContext } from "../src";
 
 function sharedTests() {
   it("should inject dependencies", () => {
@@ -148,6 +148,64 @@ function sharedTests() {
     expect(block.pageService).toBe(page.pageService);
     expect(block.widgetService).toBe(widget.widgetService);
 
+    expect(page.pageService.appService).toBe(app.appService);
+    expect(widget.widgetService.appService).toBe(app.appService);
+    expect(widget.widgetService.pageService).toBe(page.pageService);
+    // self dependency
+    expect(widget.widgetService.widgetService).toBe(widget.widgetService);
+  });
+
+  it("should work with empty parentheses", () => {
+    class AppService {}
+
+    class PageService {
+      @Inject() appService: AppService;
+    }
+
+    class WidgetService {
+      @Inject() appService: AppService;
+      @Inject() pageService: PageService;
+      // self dependency
+      @Inject() widgetService: WidgetService;
+    }
+
+    @Provider(AppService)
+    class App extends Component {
+      @Inject() appService: AppService;
+
+      render() {
+        app = this;
+        return <Page />;
+      }
+    }
+    let app: App;
+
+    @Provider(PageService)
+    class Page extends Component {
+      @Inject() pageService: PageService;
+
+      render() {
+        page = this;
+        return <Widget />;
+      }
+    }
+    let page: Page;
+
+    @Provider(WidgetService)
+    class Widget extends Component {
+      @Inject() widgetService: WidgetService;
+
+      render() {
+        widget = this;
+        return <div />;
+      }
+    }
+    let widget: Widget;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppService);
+    expect(page.pageService).toBeInstanceOf(PageService);
     expect(page.pageService.appService).toBe(app.appService);
     expect(widget.widgetService.appService).toBe(app.appService);
     expect(widget.widgetService.pageService).toBe(page.pageService);

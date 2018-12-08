@@ -26,12 +26,6 @@ export function inject(targetOrToken, keyOrToken) {
     token = targetOrToken;
     return injectDecorator;
   }
-  token = Reflect.getMetadata("design:type", targetOrToken, keyOrToken);
-  if (__DEV__) {
-    if (!isValidMetadata(token)) {
-      logInvalidMetadata(targetOrToken, token);
-    }
-  }
   return injectDecorator(targetOrToken, keyOrToken);
 
   function injectDecorator(prototype, key) {
@@ -39,6 +33,15 @@ export function inject(targetOrToken, keyOrToken) {
       defineContextType(prototype);
     } else {
       prototype.constructor.contextType = InjectorContext;
+    }
+
+    if (!token) {
+      token = Reflect.getMetadata("design:type", prototype, key);
+      if (__DEV__) {
+        if (!isValidMetadata(token)) {
+          logInvalidMetadata(targetOrToken, token);
+        }
+      }
     }
 
     const descriptor = {
