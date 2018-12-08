@@ -1,4 +1,4 @@
-import { INJECTOR } from "./injector";
+import { INJECTOR, getInstance } from "./injector";
 import { isFunction, isToken } from "./types";
 import { logIncorrectBinding, logError, getDebugName } from "./errors";
 /** @typedef {import("./types").Definition} Definition */
@@ -22,6 +22,35 @@ export function toClass(constructor) {
     }
     return instance;
   });
+}
+
+/**
+ * Bind type to specified factory funciton.
+ * @param {any} depsOrFactory Dependencies or factory
+ * @param {Function} [factory] Factory
+ * @return {Function}
+ */
+export function toFactory(depsOrFactory, factory) {
+  if (__DEV__) {
+    if (factory) {
+      if (!Array.isArray(depsOrFactory)) {
+        logError(`Dependency array ${getDebugName(depsOrFactory)} is invalid`);
+      }
+      if (!isFunction(factory)) {
+        logError(`Factory ${getDebugName(factory)} is not a valid dependency`);
+      }
+    } else if (!isFunction(depsOrFactory)) {
+      logError(
+        `Factory ${getDebugName(depsOrFactory)} is not a valid dependency`
+      );
+    }
+  }
+  return asBinding(
+    factory
+      ? injector =>
+          factory(...depsOrFactory.map(token => getInstance(injector, token)))
+      : depsOrFactory
+  );
 }
 
 /* istanbul ignore next */

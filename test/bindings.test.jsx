@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { provider, inject, toClass } from "../src";
+import { provider, inject, toClass, toFactory } from "../src";
 
 function sharedTests() {
   it("should accept bindings in short form", () => {
@@ -88,6 +88,61 @@ function sharedTests() {
     expect(app.barService).toBeInstanceOf(BarService);
     expect(app.barService.fooService).toBeInstanceOf(FooService);
   });
+
+  it("should bind dependency to specified factory", () => {
+    class AppService {}
+
+    @provider([AppService, toFactory(() => new AppService())])
+    class App extends Component {
+      @inject(AppService) appService;
+
+      render() {
+        app = this;
+        return <div />;
+      }
+    }
+    /** @type {App} */
+    let app;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppService);
+  });
+
+  it("should inject dependencies to factory", () => {
+    class AppService {
+      constructor(fooService, barService) {
+        this.fooService = fooService;
+        this.barService = barService;
+      }
+    }
+    class FooService {}
+    class BarService {}
+
+    @provider(FooService, BarService, [
+      AppService,
+      toFactory(
+        [FooService, BarService],
+        (fooService, barService) => new AppService(fooService, barService)
+      )
+    ])
+    class App extends Component {
+      @inject(AppService) appService;
+
+      render() {
+        app = this;
+        return <div />;
+      }
+    }
+    /** @type {App} */
+    let app;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppService);
+    expect(app.appService.fooService).toBeInstanceOf(FooService);
+    expect(app.appService.barService).toBeInstanceOf(BarService);
+  });
 }
 
 describe("binding functions", () => {
@@ -128,6 +183,26 @@ describe("binding functions", () => {
     App;
 
     expect(console.error).toBeCalledTimes(1);
+  });
+
+  it("should validate specifed factory and dependencies", () => {
+    class FooService {}
+    class BarService {}
+    class BazService {}
+
+    @provider(
+      // @ts-ignore
+      [FooService, toFactory(new FooService())],
+      // @ts-ignore
+      [BarService, toFactory(FooService, BarService)],
+      // @ts-ignore
+      [BazService, toFactory([FooService], new BazService())]
+    )
+    class App extends Component {}
+
+    App;
+
+    expect(console.error).toBeCalledTimes(4);
   });
 });
 

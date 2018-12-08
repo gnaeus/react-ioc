@@ -76,3 +76,20 @@ declare export function inject<T>(
  * @returns Dependency resolver
  */
 declare export function toClass(cosntructor: Class<any>): Function;
+
+/**
+ * Bind dependency to specified factory funciton.
+ * @param factory Factory
+ * @returns Dependency resolver
+ */
+declare export function toFactory(factory: () => any): Function;
+/**
+ * Bind dependency to specified factory funciton.
+ * @param deps Factory dependencies
+ * @param factory Factory
+ * @returns Dependency resolver
+ */
+declare export function toFactory<T: any[]>(
+  deps: $TupleMap<T, <V>(V) => Class<V> | Token>,
+  factory: (...args: T) => any
+): Function;

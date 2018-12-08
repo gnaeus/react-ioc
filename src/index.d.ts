@@ -77,3 +77,20 @@ export declare function inject<T>(
  * @returns Dependency resolver
  */
 export declare function toClass(cosntructor: Constructor<any>): Function;
+
+/**
+ * Bind dependency to specified factory funciton.
+ * @param factory Factory
+ * @returns Dependency resolver
+ */
+export declare function toFactory(factory: () => any): Function;
+/**
+ * Bind dependency to specified factory funciton.
+ * @param deps Factory dependencies
+ * @param factory Factory
+ * @returns Dependency resolver
+ */
+export declare function toFactory<T extends [any, ...any[]]>(
+  deps: { [K in keyof T]: Constructor<T[K]> | Token },
+  factory: (...args: T) => any
+): Function;
