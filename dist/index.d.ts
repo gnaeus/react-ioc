@@ -39,10 +39,12 @@ export declare function provider(
 /**
  * Decorator that lazily registers class in scope of specified Provider.
  * @param getProvider Lambda function that returns Provider
+ * @param biding Dependency injection binding
  * @returns Decorator
  */
 export declare function registerIn(
-  getProvider: () => Provider
+  getProvider: () => Provider,
+  biding?: Function
 ): <T extends Function>(target: T) => T;
 
 /**

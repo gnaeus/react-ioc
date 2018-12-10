@@ -1945,8 +1945,9 @@
 	 * Register class in specified provider.
 	 * @typedef {{ register(constructor: Function): void }} Provider
 	 * @param {() => Provider} getProvider Function that returns some provider
+	 * @param {Function} [binding] Dependency injection binding
 	 */
-	var registerIn = function (getProvider) { return function (constructor) {
+	var registerIn = function (getProvider, binding) { return function (constructor) {
 	    registrationQueue.push(function () {
 	        {
 	            var provider_1 = getProvider();
@@ -1956,7 +1957,7 @@
 	                    ("class " + getDebugName(constructor) + " {}\n"));
 	            }
 	            else {
-	                provider_1.register(constructor);
+	                provider_1.register(binding ? [constructor, binding] : constructor);
 	            }
 	        }
 	    });

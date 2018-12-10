@@ -20,7 +20,7 @@ __Hierarchical Dependency Injection for React__
 ### Requirements: React 16.6 or greater, ES6 Map or Map polyfill.
 
 ## Documentation
-<img alt="arch" src="./docs/architecture.png" width="619" height="289" align="right" />
+<img alt="arch" src="./docs/architecture.svg" width="592" height="302" align="right" />
 
  * [@provider](#react-ioc-provider) class decorator or HOC
    * [toClass](#react-ioc-provider) binding
