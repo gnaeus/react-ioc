@@ -177,6 +177,25 @@ export default class App extends React.Component {
 }
 ```
 
+Also, is can accept binding as second argument:
+
+```jsx
+// ./services/LazyService.js
+import { registerIn, toClass } from "react-ioc";
+import App from "../components/App";
+
+interface LazyService {
+  method(): void;
+}
+
+class LazyServiceImpl implements LazyService {
+  // ...
+}
+
+@registerIn(() => App, toClass(LazyServiceImpl))
+export class LazyService {}
+```
+
 [▲ back to top ▲](#documentation) <br>
 
 #### <a name="react-ioc-inject-decorator"></a> @inject (alias @Inject)

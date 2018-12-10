@@ -76,8 +76,9 @@ export const provider = (...definitions) => Wrapped => {
  * Register class in specified provider.
  * @typedef {{ register(constructor: Function): void }} Provider
  * @param {() => Provider} getProvider Function that returns some provider
+ * @param {Function} [binding] Dependency injection binding
  */
-export const registerIn = getProvider => constructor => {
+export const registerIn = (getProvider, binding) => constructor => {
   registrationQueue.push(() => {
     if (__DEV__) {
       const provider = getProvider();
@@ -88,10 +89,10 @@ export const registerIn = getProvider => constructor => {
             `class ${getDebugName(constructor)} {}\n`
         );
       } else {
-        provider.register(constructor);
+        provider.register(binding ? [constructor, binding] : constructor);
       }
     } else {
-      getProvider().register(constructor);
+      getProvider().register(binding ? [constructor, binding] : constructor);
     }
   });
   return constructor;

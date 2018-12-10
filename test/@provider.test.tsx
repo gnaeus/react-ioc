@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
-import { provider, inject, registerIn, InjectorContext } from "../src";
+import {
+  provider,
+  inject,
+  registerIn,
+  InjectorContext,
+  toClass,
+  toFactory
+} from "../src";
 
 function sharedTests() {
   it("should dispose created instances", () => {
@@ -128,6 +135,56 @@ function sharedTests() {
 
     expect(app.appService).toBeInstanceOf(AppService);
     expect(page.pageService).toBeInstanceOf(PageService);
+    expect(page.pageService.appService).toBe(app.appService);
+  });
+
+  it("should support lazy service registration with bindings", () => {
+    interface AppService {}
+
+    class AppServiceImpl implements AppService {}
+
+    @registerIn(() => App, toClass(AppServiceImpl))
+    class AppService {}
+
+    @registerIn(
+      () => Page,
+      toFactory([AppService], appService => new PageService(appService))
+    )
+    class PageService {
+      appService: AppService;
+
+      constructor(appService: AppService) {
+        this.appService = appService;
+      }
+    }
+
+    @provider()
+    class App extends Component {
+      @inject appService: AppService;
+
+      render() {
+        app = this;
+        return <Page />;
+      }
+    }
+    let app: App;
+
+    @provider()
+    class Page extends Component {
+      @inject pageService: PageService;
+
+      render() {
+        page = this;
+        return <div />;
+      }
+    }
+    let page: Page;
+
+    render(<App />, document.createElement("div"));
+
+    expect(app.appService).toBeInstanceOf(AppServiceImpl);
+    expect(page.pageService).toBeInstanceOf(PageService);
+    expect(page.pageService.appService).toBe(app.appService);
   });
 }
 
