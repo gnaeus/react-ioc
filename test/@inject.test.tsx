@@ -224,6 +224,34 @@ function sharedTests() {
 
     expect(barService.fooService).toBeInstanceOf(FooService);
   });
+
+  it("should provide injected dependencies in constructor", () => {
+    class Session {
+      doSomethingUseful() {}
+    }
+
+    @provider(Session)
+    class App extends React.Component {
+      render() {
+        return <Loader />;
+      }
+    }
+
+    class Loader extends React.Component {
+      @inject session: Session;
+
+      constructor(props, context) {
+        super(props, context);
+        this.session.doSomethingUseful();
+      }
+
+      render() {
+        return null;
+      }
+    }
+
+    render(<App />, document.createElement("div"));
+  });
 }
 
 describe("@inject decorator", () => {

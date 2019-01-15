@@ -231,6 +231,21 @@ class MyComponent extends React.Component {
 }
 ```
 
+If you want to use dependency in `React.Component` constructor you should pass `context` argument to `super()`:
+```jsx
+import React from "react";
+import { inject } from "react-ioc";
+
+class MyComponent extends React.Component {
+  @inject fooService: FooService;
+
+  constructor(props, context) {
+    super(props, context);
+    this.fooService.doSomething();
+  }
+}
+```
+
 [▲ back to top ▲](#documentation) <br>
 
 #### <a name="react-ioc-inject-function"></a> inject
