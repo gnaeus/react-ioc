@@ -59,24 +59,26 @@ export function getInstance(injector, token) {
     });
     registrationQueue.length = 0;
   }
-  while (injector) {
-    let instance = injector._instanceMap.get(token);
+
+  let activeInjector = injector;
+  while (activeInjector) {
+    let instance = activeInjector._instanceMap.get(token);
     if (instance !== undefined) {
       return instance;
     }
-    const binding = injector._bindingMap.get(token);
+    const binding = activeInjector._bindingMap.get(token);
     if (binding) {
       const prevInjector = currentInjector;
-      currentInjector = injector;
+      currentInjector = activeInjector;
       try {
         instance = binding(injector);
       } finally {
         currentInjector = prevInjector;
       }
-      injector._instanceMap.set(token, instance);
+      activeInjector._instanceMap.set(token, instance);
       return instance;
     }
-    injector = injector._parent;
+    activeInjector = activeInjector._parent;
   }
   if (__DEV__) {
     logNotFoundDependency(token);
