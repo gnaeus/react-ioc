@@ -9,7 +9,7 @@ __Hierarchical Dependency Injection for React__
 ## Features
  * Hierarchical Dependency Injection
  * Can inject dependencies using [React Hooks](https://reactjs.org/docs/hooks-overview.html)
- * Automatically calls `.dispose()` on created class instances when Recat unmouts `Provider` component
+ * Automatically calls `.dispose()` on created class instances when React unmount `Provider` component
  * Can work without decorators
  * Supports lazy service registration with code splitting
  * ES6, CommonJS and UMD bundles
@@ -37,7 +37,7 @@ __Hierarchical Dependency Injection for React__
 ```js
 import React from "react";
 import { provider, inject } from "react-ioc"
-import { obserbvable, action } from "mobx";
+import { observable, action } from "mobx";
 import { observer } from "mobx-react";
 
 class DataContext {
@@ -206,12 +206,12 @@ Can use dependency types from Reflect Metadata (with TypeScript `--emitDecorator
 import { inject } from "react-ioc";
 
 class FooService {
-  @inject barService: BarSerivce;
+  @inject barService: BarService;
 }
 
 class MyComponent extends React.Component {
   @inject fooService: FooService;
-  @inject barService: BarSerivce;
+  @inject barService: BarService;
   // ...
 }
 ```
@@ -221,12 +221,12 @@ Or manually specified dependencies:
 import { inject } from "react-ioc";
 
 class FooService {
-  @inject(BarSerivce) barService;
+  @inject(BarService) barService;
 }
 
 class MyComponent extends React.Component {
   @inject(FooService) fooService;
-  @inject(BarSerivce) barService;
+  @inject(BarService) barService;
   // ...
 }
 ```
@@ -256,12 +256,12 @@ Property Injection:
 import { inject, InjectorContext } from "react-ioc";
 
 class FooService {
-  barService = inject(this, BarSerivce);
+  barService = inject(this, BarService);
 }
 
 class MyComponent extends React.Component {
   fooService = inject(this, FooService);
-  barService = inject(this, BarSerivce);
+  barService = inject(this, BarService);
   
   static contextType = InjectorContext;
 }
