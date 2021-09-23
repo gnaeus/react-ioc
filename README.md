@@ -141,7 +141,7 @@ App.register(FooService, [BarService, toClass(BarService)]);
 [▲ back to top ▲](#documentation) <br>
 
 #### <a name="react-ioc-register-in"></a> @registerIn (alias @RegisterIn)
-Class decorator for lazy service registration in `Provider`. Accepts lambda that returns some `Proveider` component.
+Class decorator for lazy service registration in `Provider`. Accepts lambda that returns some `Provider` component.
 
 ```jsx
 // ./services/LazyService.js
